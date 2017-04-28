@@ -28,7 +28,7 @@ import java.util.ArrayList;
         double real=0;
         Qlexeme right=null;
         Qlexeme left=null;
-        ArrayList<Qlexeme> strings;
+        ArrayList<Qlexeme> strings;//this will be the row
 
     Qlexeme(String t) {
         type=t;

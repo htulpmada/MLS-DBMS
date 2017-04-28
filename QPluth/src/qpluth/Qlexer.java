@@ -52,19 +52,8 @@ public static Qlexeme lex() throws IOException{
        switch(c){
             case '(': return new Qlexeme("OPAREN","(");
             case ')': return new Qlexeme("CPAREN",")");
-            case ',': return new Qlexeme("COMMA",",");
-            case '.': return new Qlexeme("DOT",".");
-            case '+': return new Qlexeme("PLUS","+");
-            case '*': return new Qlexeme("TIMES","*");
-            case '{': return new Qlexeme("OCURLY","{");
-            case '}': return new Qlexeme("CCURLY","}");
-            case '[': return new Qlexeme("OBRACKET","[");
-            case ']': return new Qlexeme("CBRACKET","]");
+            case '*': return new Qlexeme("STAR","*");
             case ';': return new Qlexeme("SEMI",";");
-            case '%': return new Qlexeme("MODULO","%");
-            case '|': return new Qlexeme("OR","|");
-            case '^': return new Qlexeme("POWER","^");
-            case '&': return new Qlexeme("AND","&");
 
             default:
                 //multi char tokens
@@ -77,13 +66,7 @@ public static Qlexeme lex() throws IOException{
                 else if(c=='-'){
                     return lexMinus();
                 }
-                else if(c=='/'){
-                    return lexDivide();
-                }
-                else if(c=='\"'){
-                    return lexString();
-                }
-                else if(c=='<'|c=='>'|c=='='|c=='!'){
+               else if(c=='<'|c=='>'|c=='='|c=='!'){
                     return lexOperator();
                 }
                 else if(c=='@'){skipComment(); return lex();}
@@ -153,6 +136,7 @@ public static Qlexeme lex() throws IOException{
         }
         src.unread(chr);
         //read for keywords
+        //todo change this to SQL keywords!!!
         if(token.equals("if")||token.equals("doubleDragon")){return new Qlexeme("IF","if");}
         else if(token.equals("else")||token.equals("battleToads")){return new Qlexeme("ELSE","else");}
         else if(token.equals("boolean")||token.equals("bool")||token.equals("player")){return new Qlexeme("TYPE","boolean");}
@@ -185,21 +169,7 @@ public static Qlexeme lex() throws IOException{
         
     }
 
-    private static Qlexeme lexString() throws IOException {
-        token="";
-        chr=src.read();
-        c=(char)chr;
-//        token+=c;
-        while(c!='\"'){
-            token+=c;
-            chr=src.read();
-            c=(char)chr;
-            //if (c == '\\'){c = (char) src.read();}
-        }
-//        token=token.substring(0,token.length());
-        return new Qlexeme("STRING",token);
-    }
-
+   
     private static Qlexeme lexNummber() throws IOException {
         token="";
         boolean real=false;
@@ -241,13 +211,5 @@ public static Qlexeme lex() throws IOException{
             return new Qlexeme("INTEGER",token);
         }
     }
-
-    private static Qlexeme lexDivide() throws IOException {
-        token="";
-        c=(char)src.read();
-        if(c=='/'){return new Qlexeme("INTDIVDE","//");}
-        else{src.unread(c);return new Qlexeme("DIVIDE","/");}
-    }
-    
 
 }
