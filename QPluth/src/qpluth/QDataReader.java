@@ -36,12 +36,9 @@ public class QDataReader {
                 data.add(dataLine);
                 dataLine = new ArrayList<>();
             }
-//            printData(data);
+            //printData(data);
             return data;
-        } catch (IOException ex) {
-            System.out.print("Error Finding File: " + a + "\n");
-            System.exit(1);
-        } catch (NullPointerException n) {
+        } catch (IOException i) {
             System.out.print("Error Finding File: " + a + "\n");
             System.exit(1);
         }

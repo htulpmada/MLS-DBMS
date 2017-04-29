@@ -136,35 +136,10 @@ public static Qlexeme lex() throws IOException{
         }
         src.unread(chr);
         //read for keywords
-        //todo change this to SQL keywords!!!
-        if(token.equals("if")||token.equals("doubleDragon")){return new Qlexeme("IF","if");}
-        else if(token.equals("else")||token.equals("battleToads")){return new Qlexeme("ELSE","else");}
-        else if(token.equals("boolean")||token.equals("bool")||token.equals("player")){return new Qlexeme("TYPE","boolean");}
-        else if(token.equals("integer")||token.equals("int")||token.equals("mario")){return new Qlexeme("TYPE","int");}
-        else if(token.equals("string")||token.equals("str")||token.equals("luigi")){return new Qlexeme("TYPE","string");}
-        else if(token.equals("real")||token.equals("kirby")){return new Qlexeme("TYPE","real");}
-        else if (token.equals("node")||token.equals("pika")){return new Qlexeme("TYPE", "node");}//need to document
-        else if (token.equals("setNodeV")||token.equals("chu")){return new Qlexeme("sNodeV", "Vnode");}
-        else if (token.equals("getNodeV")||token.equals("iChooseU")){return new Qlexeme("gNodeV", "Vnode");}
-        else if (token.equals("setNodeL")||token.equals("pi")){return new Qlexeme("sNodeL", "Lnode");}
-        else if (token.equals("setNodeR")||token.equals("ka")){return new Qlexeme("sNodeR", "Rnode");}
-        else if (token.equals("getNodeL")||token.equals("iChooseL")){return new Qlexeme("gNodeL", "Lnode");}
-        else if (token.equals("getNodeR")||token.equals("iChooseR")){return new Qlexeme("gNodeR", "Rnode");}//end of new stuff
-        else if(token.equals("while")||token.equals("game")){return new Qlexeme("WHILE","while");}
-        else if(token.equals("return")||token.equals("quit")){return new Qlexeme("RETURN","return");}
-        else if (token.equals("func")||token.equals("yoshi")){return new Qlexeme("FUNC", "func");}
-        else if (token.equals("nil")||token.equals("null")||token.equals("dk")){return new Qlexeme("NIL", "nil");}
-        else if (token.equals("true")||token.equals("bubble")){return new Qlexeme("BOOLEAN", "TRUE");}
-        else if (token.equals("false")||token.equals("bobble")){return new Qlexeme("BOOLEAN", "FALSE");}
-        else if (token.equals("print")||token.equals("pit")){return new Qlexeme("PRINT", "print");}
-        else if (token.equals("array")||token.equals("triforce")){return new Qlexeme("TYPE", "array");}
-        else if (token.equals("append")||token.equals("link")){return new Qlexeme("APPEND", "append");}
-        else if (token.equals("insert")||token.equals("zelda")){return new Qlexeme("INSERT", "insert");}
-        else if (token.equals("remove")||token.equals("gannon")){return new Qlexeme("REMOVE", "remove");}
-        else if (token.equals("set")||token.equals("sheik")){return new Qlexeme("SET", "set");}
-        else if (token.equals("length")||token.equals("size")||token.equals("quest")){return new Qlexeme("LENGTH", "length");}
-        else if (token.equals("break")||token.equals("gameover")){return new Qlexeme("BREAK", "break");}
-        else if (token.equals("lambda")||token.equals("samus")){return new Qlexeme("LAMBDA", "lambda");}
+        if(token.toLowerCase().equals("select")){return new Qlexeme("SELECT","select");}
+        else if(token.toLowerCase().equals("join")){return new Qlexeme("JOIN","join");}
+        else if(token.toLowerCase().equals("where")){return new Qlexeme("WHERE","where");}
+        else if(token.toLowerCase().equals("cart")){return new Qlexeme("CART","cart");}
         else {return new Qlexeme("ID",token);}
         
     }

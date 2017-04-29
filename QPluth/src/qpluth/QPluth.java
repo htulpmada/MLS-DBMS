@@ -7,6 +7,8 @@ package qpluth;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 /**
  *
@@ -22,7 +24,9 @@ public class QPluth {
      */
     public static void main(String[] args) {
         ArrayList<ArrayList<ArrayList<String>>> t; // 3D array for tables of data
+        boolean bob = true;
         // read in files 
+        
         // from command line? or default files
         if(checkInput(args)){
            t = readFile(args);
@@ -30,11 +34,23 @@ public class QPluth {
         else{
            t = readFile(data);
         }
-        // promt for security level
+        
+        // Lopp for Queries
+        while(bob){//loop till bob not true or break -_-
+            Scanner sc = new Scanner(System.in);
+            // promt for security level
+            System.out.println("Enter a Security Level:\n\t");
+            try{int i = sc.nextInt();System.out.println(i);}
+            catch(InputMismatchException m){System.out.println("Please Enter A Number\n -_- \n");}
+            
+        }
+        
         
         //process queries until exit
 
     }
+    
+    
     
     public static ArrayList<ArrayList<ArrayList<String>>> readFile(String[] args){
         ArrayList<ArrayList<ArrayList<String>>> tables = new ArrayList<>();
