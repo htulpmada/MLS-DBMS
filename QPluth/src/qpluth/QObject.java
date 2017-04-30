@@ -14,8 +14,9 @@ import java.util.ArrayList;
 class QObject {
     
     ArrayList<ArrayList<ArrayList<String>>> tables;
+    ArrayList<ArrayList<String>> result;
     String token[];
-    ArrayList<String> select,from,where;
+    ArrayList<String> select,from,where,colsIndex,tblIndex,cond;
     boolean w,valid;
     
     public QObject(){
@@ -74,15 +75,18 @@ class QObject {
             }
         }
         printArray(where);
-        
-        
-
     }
 
-    boolean execute(ArrayList<ArrayList<ArrayList<String>>> t, int sLvl) {
+    public boolean execute(ArrayList<ArrayList<ArrayList<String>>> t, int sLvl) {
+        tables = t;
+        result = new ArrayList<>();
+        
+        
+        
+        if(select.get(0).compareTo("*")!=0){}
         return false;
     }
-
+    
     public static void printArray(ArrayList<String> arr){
         for(String a : arr){
             System.out.print(a + "\t");
