@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package qpluth;
 
 import java.io.File;
@@ -12,53 +7,78 @@ import java.util.Scanner;
 
 /**
  *
- * @author APluth
+ * @author Adam Pluth
  */
 public class QPluth {
 
     static String[] data = {"T1.txt","T2.txt","T3.txt"};
+    static String[] query;
+    static Scanner sc;
+    static int sLvl = 1;// security level
+    static QObject QObj;
     File t1,t2,t3;
-    Qlexeme query = null;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         ArrayList<ArrayList<ArrayList<String>>> t; // 3D array for tables of data
-        boolean bob = true;
+        boolean bob = true;// condition of loop
+        sc = new Scanner(System.in);            
+        QObj = new QObject();
         // read in files 
-        
         // from command line? or default files
-        if(checkInput(args)){
-           t = readFile(args);
-        }
-        else{
-           t = readFile(data);
-        }
-        
+        if(checkInput(args))
+            {t = readFile(args);}
+        else
+            {t = readFile(data);}
         // Lopp for Queries
         while(bob){//loop till bob not true or break -_-
-            Scanner sc = new Scanner(System.in);
             // promt for security level
-            System.out.println("Enter a Security Level:\n\t");
-            try{int i = sc.nextInt();System.out.println(i);}
-            catch(InputMismatchException m){System.out.println("Please Enter A Number\n -_- \n");}
-            
+            sLvl = securityRequest();
+            // promt and read Query
+            getQuery();
+            // parse and execute query
+            QObj.parse(query);
+            //process queries until exit on bad query or exit word
+            bob = QObj.execute(t,sLvl);
         }
-        
-        
-        //process queries until exit
+    }
 
+    public static void getQuery(){
+        String token = "";
+        while(!token.endsWith("; ")){
+            token += sc.next();
+            token += " ";
+        }
+        token = token.split(";")[0];
+        query = token.split(" ");
+    //    System.out.print(token + "\n");
+    //    for(String q : query){System.out.print(q + "\n");}
+        if(token.toLowerCase().compareTo("exit")==0){System.exit(0);}
     }
     
-    
+    public static int securityRequest(){
+        int i;
+        System.out.println("Enter a Security Level:\n\t");
+        try{
+            i = sc.nextInt();
+        }
+        catch(InputMismatchException m){
+            System.out.println("Please Enter A Number\n -_- \n");
+            i = securityRequest();
+        }
+        return i;
+    }
     
     public static ArrayList<ArrayList<ArrayList<String>>> readFile(String[] args){
         ArrayList<ArrayList<ArrayList<String>>> tables = new ArrayList<>();
         QDataReader dReader = new QDataReader();
-            
+        int i = 1;    
         for(String a : args){
-//            System.out.print("NEW Table: \n");
+            System.out.print("Reading Table:\n\t" + i + "---" + a + "\n");
             tables.add(dReader.read(a));
+            i++;
         }
         
         return tables;
@@ -82,6 +102,5 @@ public class QPluth {
             return status;
         }
     }
-
-    
+   
 }
