@@ -47,6 +47,7 @@ public class QPluth {
 
     public static void getQuery(){
         String token = "";
+        System.out.println("Enter a Query:\n\t");
         while(!token.endsWith("; ")){
             token += sc.next();
             token += " ";
