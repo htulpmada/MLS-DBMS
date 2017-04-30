@@ -33,7 +33,7 @@ public class QDataReader {
                     charNum++;
                     dataLine.add(part);
                 }
-                data.add(dataLine);
+                if(dataLine.size()>1){data.add(dataLine);}
                 dataLine = new ArrayList<>();
             }
             //printData(data);

@@ -19,6 +19,12 @@ class QObject {
         });
         System.out.print("\n");
     }
+    public static void printIArray(ArrayList<Integer> arr){
+        arr.stream().forEach((a) -> {
+            System.out.print(a + "\t");
+        });
+        System.out.print("\n");
+    }
     public static void printTable(ArrayList<ArrayList<String>> arr){
         arr.stream().forEach((ar) -> {
             ar.stream().forEach((a) -> {
@@ -27,9 +33,22 @@ class QObject {
         System.out.print("\n");
         });
     }
+    public static void printMap(ArrayList<ArrayList<ArrayList<String>>> arra){
+        arra.stream().forEach((arr) -> {
+            arr.stream().forEach((ar) -> {
+                ar.stream().forEach((a) -> {
+                    System.out.print(a + "\t");
+                });
+            System.out.print("\n");
+            });
+            System.out.print("\n");
+            System.out.print("\n");
+            System.out.print("\n");
+        });
+    }
    
     ArrayList<ArrayList<ArrayList<String>>> tables;
-    ArrayList<ArrayList<String>> result;
+    ArrayList<ArrayList<ArrayList<String>>> result;
     String token[];
     ArrayList<String> select,from,where,colsIndex,tblIndex,cond;
     boolean w,valid;
@@ -105,82 +124,116 @@ class QObject {
         result = new ArrayList<>();
 
         // get tables from 'FROM' clause
-        switch (from.size()) {
-            case 1:
-                result = getOneTable();
-                break;
-            case 2:
-                result = getTwoTables();
-                break;
-            case 3:
-                result = getAllTables();
-                break;
-            default:
-                break;
-        }
-        
+        result = getTables();
+        //condition filter
+        result = filter(result);
         //securityFilter();
         
         
+        printMap(result);
         return false;
     }
     
+    public ArrayList<ArrayList<ArrayList<String>>> filter(ArrayList<ArrayList<ArrayList<String>>> table){
+        ArrayList<ArrayList<ArrayList<String>>> resTable = new ArrayList<>();
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        ArrayList<String> row = new ArrayList<>();
+        
+        if(select.get(0).compareTo("*")==0){return table;}
+
+        // find indices to keep
+        ArrayList<Integer> indx = new ArrayList<>();
+        ArrayList<Integer> cond = new ArrayList<>();
+        if(!select.contains("TC")){select.add("TC");}
+        for(int t = 0; t < table.size(); t++){
+            for(int i = 0; i < table.get(t).get(0).size(); i++){
+                if(select.contains(table.get(t).get(0).get(i))){
+                    indx.add(i);
+                    if(i==0){indx.add(1);}
+                }
+                if(where.contains(table.get(t).get(0).get(i))){
+                    cond.add(i);
+                }
+            }
+        }
+        if(indx.isEmpty()){return resTable;}
+        for(int t = 0; t < table.size(); t++){
+            for(int r = 0; r < table.get(t).get(0).size(); r++){
+                for(Integer index : indx){
+                    row.add(table.get(t).get(r).get(index));
+                }
+                for(Integer index : cond){
+                    row.add(table.get(t).get(r).get(index));
+                    //test condition here!!
+
+                    //!!
+                }
+                if(!row.isEmpty()){
+                    result.add(row);
+                    row = new ArrayList<>();
+                }
+            }
+            resTable.add(result);
+            result = new ArrayList<>();
+        }
+//        printTable(result);
+        return resTable;
+    }
     
-    
-    private ArrayList<ArrayList<String>> getOneTable() {
-        ArrayList<ArrayList<String>> table;
+    private ArrayList<ArrayList<ArrayList<String>>> getOneTable() {
+        ArrayList<ArrayList<ArrayList<String>>> table = new ArrayList<>() ;
         
         switch(from.get(0).compareTo("T2")){
             case -1:
-                table = tables.get(0);
+                table.add(tables.get(0));
                 break;
             case 0:
-                table = tables.get(1);
+                table.add(tables.get(1));
                 break;
             default:
-                table = tables.get(2);
-                break;
+               table.add(tables.get(2));
+                 break;
         }
         return table;
     }
 
-    private ArrayList<ArrayList<String>> getTwoTables() {
-        ArrayList<ArrayList<String>> table1;
-        ArrayList<ArrayList<String>> table2;
+    private ArrayList<ArrayList<ArrayList<String>>> getTwoTables() {
+        ArrayList<ArrayList<ArrayList<String>>> table = null ;
         
-        table1 = getOneTable();
+        table = getOneTable();
         switch(from.get(1).compareTo("T2")){
             case -1:
-                table2 = tables.get(0);
+               table.add(tables.get(0));
                 break;
             case 0:
-                table2 = tables.get(1);
+               table.add(tables.get(1));
                 break;
             default:
-                table2 = tables.get(2);
+               table.add(tables.get(2));
                 break;
         }
-        return CartesianTables(table1,table2);
+        return table;
     }
     
-    private ArrayList<ArrayList<String>> getAllTables() {
-        ArrayList<ArrayList<String>> table;
+    private ArrayList<ArrayList<ArrayList<String>>> getAllTables() {
+        ArrayList<ArrayList<ArrayList<String>>> table = null ;
         
-        switch(from.get(0).compareTo("T2")){
+        table = getOneTable();
+        switch(from.get(1).compareTo("T2")){
             case -1:
-                table = tables.get(0);
+               table.add(tables.get(0));
                 break;
             case 0:
-                table = tables.get(1);
+               table.add(tables.get(1));
                 break;
             default:
-                table = tables.get(2);
+               table.add(tables.get(2));
                 break;
         }
         return table;
     }
 
-    private ArrayList<ArrayList<String>> shuffleTables
+    private ArrayList<ArrayList<String>> joinTables
         (ArrayList<ArrayList<String>> table1, ArrayList<ArrayList<String>> table2) {
         printTable(table1);
         // which one is bigger?
@@ -190,8 +243,10 @@ class QObject {
         
         for(int i = 0; i < k; i++){
 //            for(int j = 0; j < table2.size(); j++){
+                temp1 = new ArrayList<>(table1.get(i));
+                temp2 = new ArrayList<>(table2.get(i));
                 temp1 = table1.get(i);
-                temp2 = table2.get(i);//
+                temp2 = table2.get(i);
                 temp1.addAll(temp2);
                 table1.set(i,temp1);
 //            }
@@ -209,30 +264,26 @@ class QObject {
             }
         }
         table1.set(0, row);
-        printTable(table1);
+//        printTable(table1);
         
         return table1;
     }
 
-    private ArrayList<ArrayList<String>> CartesianTables
+    private ArrayList<ArrayList<String>> cartesianTables
         (ArrayList<ArrayList<String>> table1, ArrayList<ArrayList<String>> table2) {
-
             
+        if(table1.isEmpty()){return table2;}
+        if(table2.isEmpty()){return table1;}
         ArrayList<ArrayList<String>> table = new ArrayList<>();
-        
-        // which one is bigger?
-        int k = (table1.size()<table2.size())? table1.size() : table2.size() ;
-        
-        ArrayList<String> temp1 = new ArrayList<>();
-        ArrayList<String> temp2 = new ArrayList<>();
-        
+        ArrayList<String> temp1;
+        ArrayList<String> temp2;
         //first row
         temp1 = table1.get(0);
         temp2 = table2.get(0);//
         temp1.addAll(temp2);
         table.add(temp1);
 
-        for(int i = 1; i < k; i++){
+        for(int i = 1; i < table1.size(); i++){
             for(int j = 1; j < table2.size(); j++){
                 temp1 = new ArrayList<>(table1.get(i));
                 temp2 = new ArrayList<>(table2.get(j));
@@ -257,9 +308,25 @@ class QObject {
         
         return table;
     }
- 
-    
-    
-    
- 
+
+    private ArrayList<ArrayList<ArrayList<String>>> getTables() {
+        switch (from.size()) {
+            case 1:
+                if(from.get(0).compareTo("*")==0){
+                    result = getAllTables();
+                    break;
+                }
+                result = getOneTable();
+                break;
+            case 2:
+                result = getTwoTables();
+                break;
+            case 3:
+                result = getAllTables();
+                break;
+            default:
+                break;
+        }
+        return result;
+    } 
 }
