@@ -33,22 +33,11 @@ class QObject {
         System.out.print("\n");
         });
     }
-    public static void printMap(ArrayList<ArrayList<ArrayList<String>>> arra){
-        arra.stream().forEach((arr) -> {
-            arr.stream().forEach((ar) -> {
-                ar.stream().forEach((a) -> {
-                    System.out.print(a + "\t");
-                });
-            System.out.print("\n");
-            });
-            System.out.print("\n");
-            System.out.print("\n");
-            System.out.print("\n");
-        });
-    }
    
     ArrayList<ArrayList<ArrayList<String>>> tables;
+    ArrayList<ArrayList<ArrayList<String>>> resTable;
     ArrayList<ArrayList<ArrayList<String>>> result;
+    ArrayList<ArrayList<String>> rt;
     String token[];
     ArrayList<String> select,from,where,colsIndex,tblIndex,cond;
     boolean w,valid;
@@ -124,18 +113,31 @@ class QObject {
         result = new ArrayList<>();
 
         // get tables from 'FROM' clause
-        result = getTables();
+        resTable = getTables();
+        // printTable(result);
         //condition filter
-        result = filter(result);
+        try{
+        resTable.set(0, filter(resTable.get(0)));
+        resTable.set(1, filter(resTable.get(1)));
+        resTable.set(2, filter(resTable.get(2)));
+        } catch(Exception e){}//securityFilter();
+        
+        rt = match();
+        if (!rt.isEmpty()){printTable(rt);}
+        else{
+        try{printTable(resTable.get(0));
+            printTable(resTable.get(1));
+            printTable(resTable.get(2));
+        } catch(Exception e){}
+        }
         //securityFilter();
         
         
-        printMap(result);
-        return false;
+        
+        return true;
     }
     
-    public ArrayList<ArrayList<ArrayList<String>>> filter(ArrayList<ArrayList<ArrayList<String>>> table){
-        ArrayList<ArrayList<ArrayList<String>>> resTable = new ArrayList<>();
+    public ArrayList<ArrayList<String>> filter(ArrayList<ArrayList<String>> table){
         ArrayList<ArrayList<String>> result = new ArrayList<>();
         ArrayList<String> row = new ArrayList<>();
         
@@ -145,43 +147,38 @@ class QObject {
         ArrayList<Integer> indx = new ArrayList<>();
         ArrayList<Integer> cond = new ArrayList<>();
         if(!select.contains("TC")){select.add("TC");}
-        for(int t = 0; t < table.size(); t++){
-            for(int i = 0; i < table.get(t).get(0).size(); i++){
-                if(select.contains(table.get(t).get(0).get(i))){
-                    indx.add(i);
-                    if(i==0){indx.add(1);}
-                }
-                if(where.contains(table.get(t).get(0).get(i))){
-                    cond.add(i);
-                }
+        for(int i = 0; i < table.get(0).size(); i++){
+            if(select.contains(table.get(0).get(i))){
+                indx.add(i);
+                if(i==0){indx.add(1);}
+            }
+            if(where.contains(table.get(0).get(i))){
+                cond.add(i);
             }
         }
-        if(indx.isEmpty()){return resTable;}
-        for(int t = 0; t < table.size(); t++){
-            for(int r = 0; r < table.get(t).get(0).size(); r++){
-                for(Integer index : indx){
-                    row.add(table.get(t).get(r).get(index));
-                }
-                for(Integer index : cond){
-                    row.add(table.get(t).get(r).get(index));
-                    //test condition here!!
-
-                    //!!
-                }
-                if(!row.isEmpty()){
-                    result.add(row);
-                    row = new ArrayList<>();
-                }
+        if(indx.isEmpty()){return result;}
+        
+        for(int r = 0; r < table.size(); r++){
+            for(Integer index : indx){
+                row.add(table.get(r).get(index));
             }
-            resTable.add(result);
-            result = new ArrayList<>();
+            for(Integer index : cond){
+                row.add(table.get(r).get(index));
+                //test condition here!!
+                
+                //!!
+            }
+            if(!row.isEmpty()){
+                result.add(row);
+                row = new ArrayList<>();
+            }
         }
 //        printTable(result);
-        return resTable;
+        return result;
     }
     
     private ArrayList<ArrayList<ArrayList<String>>> getOneTable() {
-        ArrayList<ArrayList<ArrayList<String>>> table = new ArrayList<>() ;
+        ArrayList<ArrayList<ArrayList<String>>> table = new ArrayList<>(); ;
         
         switch(from.get(0).compareTo("T2")){
             case -1:
@@ -329,4 +326,47 @@ class QObject {
         }
         return result;
     } 
+
+    private ArrayList<ArrayList<String>> match() {
+        ArrayList<ArrayList<String>> n = new ArrayList<>();
+        
+        if(where.isEmpty()){return n;}
+        int[] d = {0,2};
+        int[] dd = {4,6};
+        if(where.size() > 3){
+            n = matchOne(d);
+            resTable.set(0,resTable.get(1));
+            n.addAll(matchOne(d));
+        }
+        else{
+            n = matchOne(d);
+        }
+        
+        return n;
+    }
+
+    private ArrayList<ArrayList<String>> matchOne(int[] d) {
+        ArrayList<ArrayList<String>> n = new ArrayList<>();
+        ArrayList<String> row = new ArrayList<>();
+            
+        ArrayList<Integer> indx = new ArrayList<>();
+        ArrayList<Integer> cond = new ArrayList<>();
+        for(int i = 0; i < resTable.get(0).get(0).size(); i++){
+            if(select.contains(resTable.get(0).get(0).get(i))){
+                indx.add(i);
+                if(i==0){indx.add(1);}
+            } 
+            if(where.contains(resTable.get(0).get(0).get(i))){
+                cond.add(i);
+            }
+        }
+        for(int r = 1; r < resTable.get(0).size(); r++){
+            for(Integer index : indx){
+                row.add(resTable.get(0).get(r).get(index));
+            }
+        }
+        return n;
+    }
+
+
 }

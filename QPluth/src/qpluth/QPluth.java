@@ -52,6 +52,7 @@ public class QPluth {
             token += sc.next();
             token += " ";
         }
+        if(token.toLowerCase().compareTo("exit")==0){System.exit(0);}
         token = token.split(";")[0];
         query = token.split(" ");
     //    System.out.print(token + "\n");
@@ -66,6 +67,7 @@ public class QPluth {
             i = sc.nextInt();
         }
         catch(InputMismatchException m){
+            sc.next();
             System.out.println("Please Enter A Number\n -_- \n");
             i = securityRequest();
         }
